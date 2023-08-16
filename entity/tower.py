@@ -4,6 +4,7 @@ from utils.misc import find_nearest
 import pygame
 import math
 
+# TODO: add different types of turrets
 class Turret(Entity):
     def __init__(self,
             image="assets/gun.png",
@@ -51,17 +52,20 @@ class Tower(Entity):
                 spawn=(x1, y1),
                 target=(x2, y2),
                 speed=10,
-                team=0
+                lifetime=1000,
+                team=0,
             ))
             self.turret.ang = 270 - math.degrees(math.atan2(y2-y1, x2-x1))
     
     def update(self, enemies):
         super().update([])
 
+        # shoot the nearest enemy
         nearest_enemy = find_nearest(self, enemies)
         if pygame.time.get_ticks() > self.last_fired + self.turret.rate:
             self.last_fired = pygame.time.get_ticks()
             self.shoot(nearest_enemy)
         
+        # kill bullets if their lifetime is over
         for bullet in self.bullets:
             bullet.update()

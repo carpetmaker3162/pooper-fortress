@@ -25,11 +25,14 @@ class Enemy(Entity):
     def update(self, player, towers, bullets):
         super().update(bullets)
 
+        # move diagonally towards self.target
+        # TODO: add pathfinding for enemies in case there is a path to the player
         self.x_speed, self.y_speed = find_xy_speed(
             self.speed, (self.x, self.y), self.target)
         
         self.move(self.x_speed, self.y_speed, towers)
         
+        # attack nearby towers or the player. prioritize the player
         if self.rect.colliderect(player.rect):
             self.attack(player)
         else:
