@@ -52,7 +52,7 @@ class Tower(Entity):
                 spawn=(x1, y1),
                 target=(x2, y2),
                 speed=10,
-                lifetime=1000,
+                lifetime=1500,
                 team=0,
             ))
             self.turret.ang = 270 - math.degrees(math.atan2(y2-y1, x2-x1))
