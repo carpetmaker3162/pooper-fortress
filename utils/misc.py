@@ -1,3 +1,7 @@
+# NOTE: got rid of the rounding in find_xy_speed so that enemies 
+# can actually move diagonally properly. add back or use alternative
+# if floatingpoint imprecision becomes a problem
+
 import math
 
 def sign(number):
@@ -21,7 +25,7 @@ def find_xy_speed(speed: float, pos: tuple, goal: tuple):
     except ZeroDivisionError:
         return 0, 0
 
-    return math.ceil(x_speed), math.ceil(y_speed)
+    return x_speed, y_speed
 
 def distance(coords1: tuple, coords2: tuple):
     x1, y1 = coords1

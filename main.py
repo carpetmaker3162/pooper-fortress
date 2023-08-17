@@ -44,10 +44,14 @@ class Game:
         self.player_died = False
         self.wave_in_progress = False
         self.wave = 1
+        
         self.enemies_remaining = WAVES[self.wave - 1]["enemy_count"]
         self.freq = WAVES[self.wave - 1]["freq"]
         self.next_spawn = random.randint(1000, 3000)
         self.last_spawn = 0
+
+        self.clock = pygame.time.Clock()
+        self.framecap = fps
 
         self.player = Entity(
             image="assets/player.png",
@@ -63,6 +67,14 @@ class Game:
         self.buttons.add(Button(image="assets/none.png",
                         x=825, y=625, width=50, height=50,
                         id="nextwave"))
+        
+        self.enemies.add(Enemy(
+                spawn=(random.randint(0, 800), 100),
+                size=(50, 50),
+                hp=100,
+                speed=2,
+                target=(450, 300)
+            ))
         
         # grid that mirrors current layout
         self.grid = [[0] * SCREEN_WIDTH for _ in range(SCREEN_HEIGHT)]
@@ -154,20 +166,21 @@ class Game:
         if not self.player_died:
             self.player.draw(self.screen)
         
-        if (current_time > self.last_spawn + self.next_spawn 
-                and self.wave_in_progress):
-            self.last_spawn = current_time
-            self.enemies_remaining -= 1
-            self.next_spawn = random.randint(*self.freq)
-            self.enemies.add(Enemy(
-                spawn=(random.randint(0, 800), 100),
-                size=(50, 50),
-                hp=100,
-                speed=2,
-                target=(450, 300)
-            ))
+        # if (current_time > self.last_spawn + self.next_spawn 
+        #         and self.wave_in_progress):
+        #     self.last_spawn = current_time
+        #     self.enemies_remaining -= 1
+        #     self.next_spawn = random.randint(*self.freq)
+        #     self.enemies.add(Enemy(
+        #         spawn=(random.randint(0, 800), 100),
+        #         size=(50, 50),
+        #         hp=100,
+        #         speed=2,
+        #         target=(450, 300)
+        #     ))
         
         self.buttons.draw(self.screen)
+        self.clock.tick(self.framecap)
     
     def loop(self):
         while not self.game_stopped:

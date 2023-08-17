@@ -1,5 +1,5 @@
 from entity.entity import Entity
-from utils.misc import find_xy_speed
+from utils.misc import find_xy_speed, distance
 import pygame
 
 class Enemy(Entity):
@@ -30,9 +30,18 @@ class Enemy(Entity):
         self.x_speed, self.y_speed = find_xy_speed(
             self.speed, (self.x, self.y), self.target)
         
-        self.move(self.x_speed, self.y_speed, towers)
+        # if in proximity move the enemy direclty over target to prevent oscillation
+        # might be unnecessary later because i plan on having
+        # enemies NOT overlap the player and just bump into it
+        dist = distance((self.x, self.y), self.target)
+        if dist <= self.speed:
+            self.x, self.y = self.target
+            self.rect.topleft = self.target
+        else:
+            self.move(self.x_speed, self.y_speed, towers)
         
         # attack nearby towers or the player. prioritize the player
+        print(player.rect, self.rect)
         if self.rect.colliderect(player.rect):
             self.attack(player)
         else:

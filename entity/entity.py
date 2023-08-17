@@ -57,10 +57,11 @@ class Entity(pygame.sprite.Sprite):
             if dy != 0:
                 dy -= sign(dy)
 
-        self.y += dy
         self.x += dx
+        self.y += dy
 
-        self.rect.move_ip((dx, dy))
+        #self.rect.move_ip((dx, dy))
+        self.rect.topleft = (round(self.x), round(self.y))
 
     def colliding_at(self, x, y, entities):
         self.rect.move_ip((x, y))
