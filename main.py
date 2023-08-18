@@ -147,7 +147,7 @@ class Game:
         self.bullets.draw(self.screen)
 
         # update and draw enemies
-        self.enemies.update(self.player, [], self.bullets)
+        self.enemies.update(self.player, self.towers, self.bullets)
         for enemy in self.enemies:
             enemy.draw(self.screen) # have to loop to draw hp bars
         
