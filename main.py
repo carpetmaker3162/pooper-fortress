@@ -14,24 +14,24 @@ TOOLBAR_HEIGHT = 100
 
 WAVES = [
     {
-        "enemy_count": 5,
-        "freq": (1000, 3000),
-    },
-    {
-        "enemy_count": 10,
-        "freq": (500, 3000),
-    },
-    {
-        "enemy_count": 20,
-        "freq": (500, 2000),
-    },
-    {
-        "enemy_count": 30,
-        "freq": (500, 1000),
-    },
-    {
         "enemy_count": 50,
-        "freq": (250, 1000),
+        "freq": (100, 300),
+    },
+    {
+        "enemy_count": 100,
+        "freq": (50, 300),
+    },
+    {
+        "enemy_count": 200,
+        "freq": (50, 200),
+    },
+    {
+        "enemy_count": 300,
+        "freq": (50, 100),
+    },
+    {
+        "enemy_count": 500,
+        "freq": (25, 100),
     },
 ]
 
@@ -46,7 +46,6 @@ class Game:
         self.player_died = False
         self.wave_in_progress = False
         self.wave = 1
-
         self.enemies_remaining = WAVES[self.wave - 1]["enemy_count"]
         self.freq = WAVES[self.wave - 1]["freq"]
         self.next_spawn = random.randint(1000, 3000)
@@ -150,7 +149,7 @@ class Game:
         self.bullets.draw(self.screen)
 
         # update and draw enemies
-        self.enemies.update(self.player, [], self.bullets)
+        self.enemies.update(self.player, self.towers, self.bullets)
         for enemy in self.enemies:
             enemy.draw(self.screen)  # have to loop to draw hp bars
 
