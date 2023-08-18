@@ -1,14 +1,15 @@
 from utils.img import get_image
 import pygame
 
+
 class Button(pygame.sprite.Sprite):
     def __init__(self,
-            image="assets/none.png",
-            x=0,
-            y=0,
-            width=100,
-            height=100,
-            id=0):
+                 image="assets/none.png",
+                 x=0,
+                 y=0,
+                 width=100,
+                 height=100,
+                 id=0):
 
         super().__init__()
 
