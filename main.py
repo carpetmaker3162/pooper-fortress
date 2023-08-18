@@ -14,24 +14,24 @@ TOOLBAR_HEIGHT = 100
 
 WAVES = [
     {
-        "enemy_count": 5,
-        "freq": (1000, 3000),
-    },
-    {
-        "enemy_count": 10,
-        "freq": (500, 3000),
-    },
-    {
-        "enemy_count": 20,
-        "freq": (500, 2000),
-    },
-    {
-        "enemy_count": 30,
-        "freq": (500, 1000),
-    },
-    {
         "enemy_count": 50,
-        "freq": (250, 1000),
+        "freq": (100, 300),
+    },
+    {
+        "enemy_count": 100,
+        "freq": (50, 300),
+    },
+    {
+        "enemy_count": 200,
+        "freq": (50, 200),
+    },
+    {
+        "enemy_count": 300,
+        "freq": (50, 100),
+    },
+    {
+        "enemy_count": 500,
+        "freq": (25, 100),
     },
 ]
 
