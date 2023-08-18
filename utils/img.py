@@ -5,6 +5,8 @@ cache = {}
 
 # rotation ?
 # `rot` param
+
+
 def get_image(imagepath: str, width=100, height=100):
     image_key = f"{imagepath.strip()} width={width} height={height}"
     if image_key in cache:

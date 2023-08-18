@@ -2,12 +2,13 @@ import pygame
 from utils.img import get_image
 from utils.misc import sign
 
+
 class Entity(pygame.sprite.Sprite):
     def __init__(self,
-            image="assets/none.png",
-            spawn=(0, 0),
-            size=(100, 100),
-            hp=-1):
+                 image="assets/none.png",
+                 spawn=(0, 0),
+                 size=(100, 100),
+                 hp=-1):
 
         super().__init__()
         self.width, self.height = size
@@ -39,7 +40,7 @@ class Entity(pygame.sprite.Sprite):
         new_rect = rotated_image.get_rect(center=current_center)
 
         screen.blit(rotated_image, new_rect.topleft)
-        
+
         if self.hp != self.max_hp and not self.invulnerable:
             self.draw_hp_bar(screen)
 
@@ -60,7 +61,7 @@ class Entity(pygame.sprite.Sprite):
         self.x += dx
         self.y += dy
 
-        #self.rect.move_ip((dx, dy))
+        # self.rect.move_ip((dx, dy))
         self.rect.topleft = (round(self.x), round(self.y))
 
     def colliding_at(self, x, y, entities):
@@ -75,7 +76,7 @@ class Entity(pygame.sprite.Sprite):
                 if bullet.team != self.team:
                     self.hp -= bullet.damage
                     bullet.kill()
-        
+
         if self.hp <= 0 and not self.invulnerable:
             self.kill()
             # remove own bullets

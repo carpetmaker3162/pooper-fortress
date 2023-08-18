@@ -1,14 +1,16 @@
-# NOTE: got rid of the rounding in find_xy_speed so that enemies 
+# NOTE: got rid of the rounding in find_xy_speed so that enemies
 # can actually move diagonally properly. add back or use alternative
 # if floatingpoint imprecision becomes a problem
 
 import math
+
 
 def sign(number):
     if number >= 0:
         return 1
     else:
         return -1
+
 
 def find_xy_speed(speed: float, pos: tuple, goal: tuple):
     x1, y1 = pos
@@ -27,14 +29,16 @@ def find_xy_speed(speed: float, pos: tuple, goal: tuple):
 
     return x_speed, y_speed
 
+
 def distance(coords1: tuple, coords2: tuple):
     x1, y1 = coords1
     x2, y2 = coords2
-    
+
     dx = x2 - x1
     dy = y2 - y1
 
     return math.sqrt(dx**2 + dy**2)
+
 
 def find_nearest(entity, group):
     x1, y1 = entity.x, entity.y
@@ -50,6 +54,7 @@ def find_nearest(entity, group):
             nearest_entity = other_entity
 
     return nearest_entity
+
 
 def floor_to_nearest(coordinate: tuple, incr: tuple):
     x, y = coordinate
