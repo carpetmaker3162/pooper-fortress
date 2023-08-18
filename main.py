@@ -43,7 +43,7 @@ class Game:
         self.game_stopped = False
         self.player_died = False
         self.wave_in_progress = False
-        self.wave = 1
+        self.wave = 0
         
         self.enemies_remaining = WAVES[self.wave - 1]["enemy_count"]
         self.freq = WAVES[self.wave - 1]["freq"]
