@@ -20,6 +20,7 @@ class Bullet(Entity):
 
         self.lifetime = lifetime
         self.life_begin = pygame.time.get_ticks()
+        self.hit = False
         
         self.damage = damage
         self.aoe_range = aoe_range
@@ -30,18 +31,18 @@ class Bullet(Entity):
         if pygame.time.get_ticks() - self.life_begin > self.lifetime:
             self.kill()
         
-        hit = False
         do_direct_hit = False
         if pygame.sprite.spritecollide(self, enemies, False):
-            hit = True
+            self.hit = True # isn't turned back to False because bullets should all be killed after a single hit, modify if this changes in the future
             do_direct_hit = True
             self.kill()
         
+        # NOTE: self.hit is accessed by Tower.update which is then returned to main to draw splash animations
         for enemy in enemies:
             if do_direct_hit and collide_aabb(self, enemy):
                 enemy.hp -= self.damage
                 do_direct_hit = False
-            elif hit:
+            elif self.hit:
                 enemy.hp -= self.damage * self.aoe_dropoff(enemy)
     
     def aoe_dropoff(self, enemy):

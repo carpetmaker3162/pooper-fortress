@@ -61,6 +61,9 @@ class Tower(Entity):
             self.last_fired = pygame.time.get_ticks()
             self.shoot(nearest_enemy)
 
-        # kill bullets if their lifetime is over
+        aoe_hits = []
         for bullet in self.bullets:
             bullet.update(enemies)
+            if bullet.hit and bullet.aoe_range > 0:
+                aoe_hits.append(bullet)
+        return aoe_hits

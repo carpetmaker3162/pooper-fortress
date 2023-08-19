@@ -75,6 +75,8 @@ class Game:
         self.freq = WAVES[self.wave - 1]["freq"]
         self.next_spawn = random.randint(1000, 3000)
         self.last_spawn = 0
+        self.hits = [] # to record aoe hits for splash animations
+        self.splash_animation_duration = 40
 
         self.player = Entity(
             image="assets/player.png",
@@ -165,7 +167,6 @@ class Game:
 
     def update(self):
         current_time = pygame.time.get_ticks()
-        self.towers.update(self.enemies)
 
         if self.enemies_remaining == 0:
             self.wave_in_progress = False
@@ -174,9 +175,15 @@ class Game:
 
         # draw towers, bullets, and turrets
         for tower in self.towers:
+            new_hits = tower.update(self.enemies)
+            for hit in new_hits:
+                self.hits.append((hit, current_time))
+
             tower.draw(self.screen)
+            
             for bullet in tower.bullets:
                 self.bullets.add(bullet)
+
             tower.turret.draw(self.screen)
 
             # re-add existing towers to grid
@@ -211,6 +218,12 @@ class Game:
                 speed=2,
                 target=(450, 300)
             ))
+        
+        for bullet, anim_start in self.hits:
+            if anim_start + self.splash_animation_duration < current_time:
+                self.hits.remove((bullet, anim_start))
+            else:
+                pygame.draw.circle(self.screen, (241, 241, 216), (bullet.x + bullet.width/2, bullet.y + bullet.height/2), bullet.aoe_range - 30)
 
         self.buttons.draw(self.screen)
         self.clock.tick(self.framecap)
