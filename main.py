@@ -1,6 +1,6 @@
 from entity.entity import Entity
 from entity.enemy import Enemy
-from entity.tower import Tower, Turret
+from entity.tower import Tower
 from utils.misc import floor_to_nearest
 from utils.button import Button
 import random
@@ -41,14 +41,16 @@ TOWERS = {
         "size": (50, 50),
         "hp": 100,
         "turret_rate": 500,
-        "turret_dmg": 20,
+        "turret_dmg": 10,
+        "turret_aoe": 0,
     },
     "cannon": {
         "type": "cannon",
         "size": (50, 50),
         "hp": 100,
         "turret_rate": 1000,
-        "turret_dmg": 45,
+        "turret_dmg": 30,
+        "turret_aoe": 100,
     }
 }
 
@@ -185,12 +187,12 @@ class Game:
         self.bullets.draw(self.screen)
 
         # update and draw enemies
-        self.enemies.update(self.player, self.towers, self.bullets)
+        self.enemies.update(self.player, self.towers)
         for enemy in self.enemies:
             enemy.draw(self.screen)  # have to loop to draw hp bars
 
         # update and draw player
-        self.player.update([])
+        self.player.update()
         if self.player.hp <= 0:
             self.player_died = True
         if not self.player_died:

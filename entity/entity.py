@@ -1,7 +1,7 @@
 import pygame
 import math
 from utils.img import get_image
-from utils.misc import sign, decrement
+from utils.misc import distance, decrement, collide_aabb
 
 
 class Entity(pygame.sprite.Sprite):
@@ -59,24 +59,12 @@ class Entity(pygame.sprite.Sprite):
 
     # return an entity currently collided with, if any
     def colliding_at(self, x, y, entities):
-        left = self.x + x
-        top = self.y + y
-        right = left + self.width
-        bottom = top + self.height
-        
         for entity in entities:
-            if (entity.rect.left < right and entity.rect.right > left
-                    and entity.rect.top < bottom and entity.rect.bottom > top):
+            if collide_aabb(self, entity, x, y):
                 return entity
 
     # self kill & dmg handling
-    def update(self, bullets):
-        if not self.invulnerable:
-            for bullet in pygame.sprite.spritecollide(self, bullets, False):
-                if bullet.team != self.team:
-                    self.hp -= bullet.damage
-                    bullet.kill()
-
+    def update(self):
         if self.hp <= 0 and not self.invulnerable:
             self.kill()
             # remove own bullets
