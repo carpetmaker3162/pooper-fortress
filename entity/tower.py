@@ -9,7 +9,7 @@ import math
 
 class Turret(Entity):
     def __init__(self,
-                 image="assets/gun.png",
+                 image="assets/none.png",
                  spawn=(0, 0),
                  size=(100, 100),
                  rate=500,
@@ -24,14 +24,17 @@ class Turret(Entity):
 
 class Tower(Entity):
     def __init__(self,
-                 image="assets/tower.png",
+                 type="gun",
                  spawn=(0, 0),
                  size=(100, 100),
                  hp=100,
                  turret_rate=500,
                  turret_dmg=20):
+        
+        turret_image_path = f"assets/turrets/{type}.png"
+        self.bullet_image_path = f"assets/bullets/{type}.png"
 
-        super().__init__(image, spawn, size, hp)
+        super().__init__("assets/tower.png", spawn, size, hp)
 
         # determine turret dimensions and location
         tw, th = int(self.width * 0.8), int(self.height * 0.8)
@@ -39,6 +42,7 @@ class Tower(Entity):
 
         self.last_fired = 0
         self.turret = Turret(
+            image=turret_image_path,
             spawn=(tx, ty),
             size=(tw, th),
             rate=turret_rate,
@@ -51,6 +55,7 @@ class Tower(Entity):
             x1, y1 = self.rect.center
             x2, y2 = entity.rect.center
             self.bullets.add(Bullet(
+                image=self.bullet_image_path,
                 spawn=(x1, y1),
                 target=(x2, y2),
                 speed=10,

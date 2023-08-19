@@ -33,9 +33,7 @@ class Entity(pygame.sprite.Sprite):
             self.invulnerable = True
 
     def draw(self, screen):
-        # if self.hitbox:
-        # pygame.draw.rect(screen, pygame.Color(
-        #     255, 0, 0), self.rect, width=5)
+        # rotate if needed
         rotated_image = pygame.transform.rotate(self.image, self.ang)
         current_center = (self.x + self.width//2, self.y + self.height//2)
         new_rect = rotated_image.get_rect(center=current_center)
@@ -53,29 +51,14 @@ class Entity(pygame.sprite.Sprite):
             dx -= decrement(dx)
         while self.colliding_at(0, dy, collidables) and dy != 0:
             dy -= decrement(dy)
-        #while self.colliding_at(dx, dy, collidables) and (dx != 0 or dy != 0):
-        #    if dx != 0:
-        #        dx -= decrement(dx)
-        #    elif dy != 0:
-        #        dy -= decrement(dy)
 
         self.x += dx
         self.y += dy
 
-        #self.rect.move_ip((dx, dy))
-        #self.rect.topleft = (self.x, self.y)
-        def r(val):
-            if val >= 0:
-                return math.floor(val)
-            else:
-                return math.ceil(val)
-        self.rect.topleft = (r(self.x), r(self.y))
+        self.rect.topleft = (round(self.x), round(self.y))
 
+    # return an entity currently collided with, if any
     def colliding_at(self, x, y, entities):
-        # self.rect.move_ip((x, y))
-        # colliding = pygame.sprite.spritecollideany(self, entities)
-        # self.rect.move_ip((-x, -y))
-        # return colliding
         left = self.x + x
         top = self.y + y
         right = left + self.width
@@ -86,6 +69,7 @@ class Entity(pygame.sprite.Sprite):
                     and entity.rect.top < bottom and entity.rect.bottom > top):
                 return entity
 
+    # self kill & dmg handling
     def update(self, bullets):
         if not self.invulnerable:
             for bullet in pygame.sprite.spritecollide(self, bullets, False):
