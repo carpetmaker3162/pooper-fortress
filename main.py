@@ -160,18 +160,24 @@ class Game:
         if self.wave_in_progress:
             return
 
-        grid_x = x//50
-        grid_y = y//50
-
-        if self.grid[grid_y][grid_x] == 1:
-            return
-        
         tower_data = TOWERS[self.current_tower]
-        self.towers.add(Tower(
+        tower = Tower(
             spawn=(x, y),
             **tower_data
-        ))
-        self.grid[grid_y][grid_x] = 1
+        )
+
+        grid_y = y//50
+        grid_x = x//50
+        grid_square = self.grid[grid_y][grid_x]
+        
+        if isinstance(grid_square, Tower):
+            if grid_square.hp != grid_square.max_hp:
+                grid_square.kill() # replace a broken tower, not sure if this will cause a bug
+            else:
+                return
+        
+        self.towers.add(tower)
+        self.grid[grid_y][grid_x] = tower
 
     def update(self):
         current_time = pygame.time.get_ticks()
@@ -200,7 +206,7 @@ class Game:
             # re-add existing towers to grid
             grid_x = tower.x//50
             grid_y = tower.y//50
-            self.grid[grid_y][grid_x] = 1
+            self.grid[grid_y][grid_x] = tower
 
         # update and draw enemies
         self.enemies.update(self.player, self.towers)
@@ -220,14 +226,24 @@ class Game:
             self.last_spawn = current_time
             self.enemies_remaining -= 1
             self.next_spawn = random.randint(*self.freq)
+            
+            spawn_location = random.choice([
+                (random.randint(-100, 900), -100),
+                (random.randint(-100, 900), 600),
+                (-100, random.randint(-100, 600)),
+                (900, random.randint(-100, 600)),
+            ])
+
             self.enemies.add(Enemy(
-                spawn=(random.randint(0, 800), 100),
+                spawn=spawn_location,
                 size=(50, 50),
                 hp=100,
                 speed=2,
                 target=(450, 300)
             ))
 
+        pygame.draw.rect(self.screen, (200, 200, 200),
+                         pygame.Rect(0, SCREEN_HEIGHT, SCREEN_WIDTH, TOOLBAR_HEIGHT))
         self.buttons.draw(self.screen)
         self.clock.tick(self.framecap)
 
@@ -237,8 +253,6 @@ class Game:
             pygame.event.pump()
             pygame.draw.rect(self.screen, (255, 255, 230),
                              pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
-            pygame.draw.rect(self.screen, (200, 200, 200),
-                             pygame.Rect(0, SCREEN_HEIGHT, SCREEN_WIDTH, TOOLBAR_HEIGHT))
             self.update()
             pygame.display.flip()
 
