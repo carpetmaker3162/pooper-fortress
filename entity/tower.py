@@ -39,7 +39,8 @@ class Tower(Entity):
         if entity is not None:
             x1, y1 = self.rect.center
             x2, y2 = entity.rect.center
-            self.bullets.add(Bullet(
+            
+            new_bullet = Bullet(
                 image=self.bullet_image_path,
                 spawn=(x1, y1),
                 target=(x2, y2),
@@ -48,9 +49,15 @@ class Tower(Entity):
                 damage=self.turret_dmg,
                 aoe_range=self.turret_aoe,
                 team=0,
-            ))
-            
-            self.turret.ang = 270 - math.degrees(math.atan2(y2-y1, x2-x1))
+            )
+            self.bullets.add(new_bullet)
+            self.turret.ang = 270 - math.degrees(math.atan2(y2 - y1, x2 - x1))
+            new_bullet.ang = 270 - math.degrees(math.atan2(y2 - y1, x2 - x1))
+    
+    def draw(self, screen):
+        super().draw(screen)
+        for bullet in self.bullets:
+            bullet.draw(screen)
 
     def update(self, enemies):
         super().update()

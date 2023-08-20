@@ -51,6 +51,14 @@ TOWERS = {
         "turret_rate": 1000,
         "turret_dmg": 30,
         "turret_aoe": 100,
+    },
+    "bomb": {
+        "type": "bomb",
+        "size": (50, 50),
+        "hp": 100,
+        "turret_rate": 2000,
+        "turret_dmg": 60,
+        "turret_aoe": 200,
     }
 }
 
@@ -70,13 +78,13 @@ class Game:
         self.game_stopped = False
         self.player_died = False
         self.wave_in_progress = False
-        self.wave = 1
+        self.wave = 0
         self.enemies_remaining = WAVES[self.wave - 1]["enemy_count"]
         self.freq = WAVES[self.wave - 1]["freq"]
         self.next_spawn = random.randint(1000, 3000)
         self.last_spawn = 0
         self.hits = [] # to record aoe hits for splash animations
-        self.splash_animation_duration = 40
+        self.splash_animation_duration = 100
 
         self.player = Entity(
             image="assets/player.png",
@@ -86,7 +94,7 @@ class Game:
         )
         self.enemies = pygame.sprite.Group()
         self.towers = pygame.sprite.Group()
-        self.bullets = pygame.sprite.Group()
+        self.bullets = pygame.sprite.Group() # unused
         self.buttons = pygame.sprite.Group()
 
         self.buttons.add(Button(image="assets/nextwave.png",
@@ -172,6 +180,13 @@ class Game:
             self.wave_in_progress = False
             # reset grid
             self.grid = [[0] * SCREEN_WIDTH for _ in range(SCREEN_HEIGHT)]
+        
+        # draw splash animations (below everything else)
+        for bullet, anim_start in self.hits:
+            if anim_start + self.splash_animation_duration < current_time:
+                self.hits.remove((bullet, anim_start))
+            else:
+                pygame.draw.circle(self.screen, (233, 233, 216), (bullet.x + bullet.width/2, bullet.y + bullet.height/2), bullet.aoe_range - 50)
 
         # draw towers, bullets, and turrets
         for tower in self.towers:
@@ -180,18 +195,12 @@ class Game:
                 self.hits.append((hit, current_time))
 
             tower.draw(self.screen)
-            
-            for bullet in tower.bullets:
-                self.bullets.add(bullet)
-
             tower.turret.draw(self.screen)
 
             # re-add existing towers to grid
             grid_x = tower.x//50
             grid_y = tower.y//50
             self.grid[grid_y][grid_x] = 1
-
-        self.bullets.draw(self.screen)
 
         # update and draw enemies
         self.enemies.update(self.player, self.towers)
@@ -218,12 +227,6 @@ class Game:
                 speed=2,
                 target=(450, 300)
             ))
-        
-        for bullet, anim_start in self.hits:
-            if anim_start + self.splash_animation_duration < current_time:
-                self.hits.remove((bullet, anim_start))
-            else:
-                pygame.draw.circle(self.screen, (241, 241, 216), (bullet.x + bullet.width/2, bullet.y + bullet.height/2), bullet.aoe_range - 30)
 
         self.buttons.draw(self.screen)
         self.clock.tick(self.framecap)
