@@ -14,24 +14,24 @@ TOOLBAR_HEIGHT = 100
 
 WAVES = [
     {
+        "enemy_count": 20,
+        "freq": (200, 600),
+    },
+    {
+        "enemy_count": 40,
+        "freq": (200, 600),
+    },
+    {
         "enemy_count": 50,
         "freq": (100, 300),
     },
     {
         "enemy_count": 100,
-        "freq": (50, 300),
+        "freq": (100, 300),
     },
     {
         "enemy_count": 200,
-        "freq": (50, 200),
-    },
-    {
-        "enemy_count": 300,
-        "freq": (50, 100),
-    },
-    {
-        "enemy_count": 500,
-        "freq": (25, 100),
+        "freq": (100, 300),
     },
 ]
 
@@ -39,15 +39,15 @@ TOWERS = {
     "gun": {
         "type": "gun",
         "size": (50, 50),
-        "hp": 100,
-        "turret_rate": 500,
+        "hp": 200,
+        "turret_rate": 330,
         "turret_dmg": 10,
         "turret_aoe": 0,
     },
     "cannon": {
         "type": "cannon",
         "size": (50, 50),
-        "hp": 100,
+        "hp": 200,
         "turret_rate": 1000,
         "turret_dmg": 30,
         "turret_aoe": 100,
@@ -55,7 +55,7 @@ TOWERS = {
     "bomb": {
         "type": "bomb",
         "size": (50, 50),
-        "hp": 100,
+        "hp": 200,
         "turret_rate": 2000,
         "turret_dmg": 60,
         "turret_aoe": 200,
@@ -85,12 +85,13 @@ class Game:
         self.last_spawn = 0
         self.hits = [] # to record aoe hits for splash animations
         self.splash_animation_duration = 100
+        self.delete_mode = False
 
         self.player = Entity(
             image="assets/player.png",
             spawn=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2),
             size=(50, 50),
-            hp=200
+            hp=2000
         )
         self.enemies = pygame.sprite.Group()
         self.towers = pygame.sprite.Group()
@@ -104,8 +105,12 @@ class Game:
         self.current_tower = "gun"
         for i, tower_name in enumerate(TOWERS.keys()):
             self.buttons.add(Button(image=f"assets/turrets/{tower_name}.png",
-                                x=25 + 100*i, y=625, width=50, height=50,
-                                id=tower_name))
+                             x=25 + 100*i, y=625, width=50, height=50,
+                             id=tower_name))
+        
+        self.buttons.add(Button(image=f"assets/trash.png",
+                         x=25 + 100*(i + 1), y=625, width=50, height=50,
+                         id="delete"))
 
         # grid that mirrors current layout
         self.grid = [[0] * SCREEN_WIDTH for _ in range(SCREEN_HEIGHT)]
@@ -154,7 +159,10 @@ class Game:
                 self.enemies_remaining = WAVES[self.wave - 1]["enemy_count"]
                 self.freq = WAVES[self.wave - 1]["freq"]
             elif button.id in TOWERS.keys():
+                self.delete_mode = False
                 self.current_tower = button.id
+            elif button.id == "delete":
+                self.delete_mode = True
 
     def add_tower(self, x, y):
         if self.wave_in_progress:
@@ -171,13 +179,18 @@ class Game:
         grid_square = self.grid[grid_y][grid_x]
         
         if isinstance(grid_square, Tower):
+            if self.delete_mode:
+                grid_square.kill()
+                self.grid[grid_y][grid_x] = 0
+                return
             if grid_square.hp != grid_square.max_hp:
                 grid_square.kill() # replace a broken tower, not sure if this will cause a bug
             else:
                 return
         
-        self.towers.add(tower)
-        self.grid[grid_y][grid_x] = tower
+        if not self.delete_mode:
+            self.towers.add(tower)
+            self.grid[grid_y][grid_x] = tower
 
     def update(self):
         current_time = pygame.time.get_ticks()
@@ -193,6 +206,11 @@ class Game:
                 self.hits.remove((bullet, anim_start))
             else:
                 pygame.draw.circle(self.screen, (233, 233, 216), (bullet.x + bullet.width/2, bullet.y + bullet.height/2), bullet.aoe_range - 50)
+        
+        for y in range(0, 600, 50):
+            for x in range(0, 900, 50):
+                sq = pygame.Rect(x, y, 50, 50)
+                pygame.draw.rect(self.screen, (200, 200, 180), sq, 1)
 
         # draw towers, bullets, and turrets
         for tower in self.towers:
@@ -237,9 +255,10 @@ class Game:
             self.enemies.add(Enemy(
                 spawn=spawn_location,
                 size=(50, 50),
-                hp=100,
-                speed=2,
-                target=(450, 300)
+                hp=200,
+                attack_dmg=4,
+                speed=1,
+                target=(450, 300),
             ))
 
         pygame.draw.rect(self.screen, (200, 200, 200),
