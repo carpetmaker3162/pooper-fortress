@@ -46,6 +46,8 @@ TOWERS = {
         "turret_speed": 12,
         "turret_range": 400,
         "turret_knockback": 1,
+        "turret_multishot": 1,
+        "turret_multishot_spread": 0,
     },
     "cannon": {
         "type": "cannon",
@@ -57,6 +59,8 @@ TOWERS = {
         "turret_speed": 8,
         "turret_range": 300,
         "turret_knockback": 2,
+        "turret_multishot": 1,
+        "turret_multishot_spread": 0,
     },
     "bomb": {
         "type": "bomb",
@@ -68,6 +72,21 @@ TOWERS = {
         "turret_speed": 5,
         "turret_range": 400,
         "turret_knockback": 4,
+        "turret_multishot": 1,
+        "turret_multishot_spread": 0,
+    },
+    "shotgun": {
+        "type": "shotgun",
+        "size": (50, 50),
+        "hp": 200,
+        "turret_rate": 500,
+        "turret_dmg": 4,
+        "turret_aoe": 0,
+        "turret_speed": 8,
+        "turret_range": 150,
+        "turret_knockback": 8,
+        "turret_multishot": 2,
+        "turret_multishot_spread": 10,
     }
 }
 

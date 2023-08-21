@@ -69,6 +69,17 @@ def floor_to_nearest(coordinate: tuple, incr: tuple):
     return (incrx * math.floor(x / incrx),
             incry * math.floor(y / incry))
 
+def get_angle(coords1: tuple, coords2: tuple):
+    x1, y1 = coords1
+    x2, y2 = coords2
+    return -math.degrees(math.atan2(y2 - y1, x2 - x1))
+
+def get_displacement(angle: float, dist: float):
+    angle_rad = math.radians(-angle)
+    dx = dist * math.cos(angle_rad)
+    dy = dist * math.sin(angle_rad)
+    return dx, dy
+
 def collide_aabb(entity1, entity2, offset_x=0, offset_y=0):
     left1, top1, w1, h1 = entity1.x, entity1.y, entity1.width, entity1.height
     left2, top2, w2, h2 = entity2.x, entity2.y, entity2.width, entity2.height

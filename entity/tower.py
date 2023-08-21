@@ -1,6 +1,6 @@
 from entity.entity import Entity
 from entity.bullet import Bullet
-from utils.misc import find_nearest
+from utils.misc import find_nearest, get_angle, get_displacement
 import pygame
 import math
 
@@ -15,7 +15,9 @@ class Tower(Entity):
                  turret_aoe=0,
                  turret_knockback=0,
                  turret_speed=10,
-                 turret_range=500):
+                 turret_range=500,
+                 turret_multishot=1,
+                 turret_multishot_spread=0):
         
         turret_image_path = f"assets/turrets/{type}.png"
         self.bullet_image_path = f"assets/bullets/{type}.png"
@@ -40,18 +42,26 @@ class Tower(Entity):
         self.turret_knockback = turret_knockback
         self.turret_speed = turret_speed # bullet speed (px/frame)
         self.turret_range = turret_range # range in px
+        self.turret_multishot = turret_multishot # amount of bullets to add to multishot (on both sides)
+        self.turret_multishot_spread = turret_multishot_spread # angle between each multishot bullet
 
     def shoot(self, entity, fps):
-        if entity is not None:
-            lifetime = 1000 * self.turret_range / self.turret_speed / fps # s = px / px/f / f/s
+        if entity is None:
+            return
+        
+        lifetime = 1000 * self.turret_range / self.turret_speed / fps # s = px / px/f / f/s
+        x1, y1 = self.rect.center
+        x2, y2 = entity.rect.center
+        bullet_angle = get_angle((x1, y1), (x2, y2))
+        self.turret.ang = bullet_angle
 
-            x1, y1 = self.rect.center
-            x2, y2 = entity.rect.center
-            
+        for i in range(self.turret_multishot):
+            angle_with_spread = bullet_angle + i*self.turret_multishot_spread
+            dx, dy = get_displacement(angle_with_spread, 10)
             new_bullet = Bullet(
                 image=self.bullet_image_path,
                 spawn=(x1, y1),
-                target=(x2, y2),
+                target=(x1+dx, y1+dy),
                 speed=self.turret_speed,
                 lifetime=lifetime,
                 damage=self.turret_dmg,
@@ -60,8 +70,23 @@ class Tower(Entity):
                 team=0,
             )
             self.bullets.add(new_bullet)
-            self.turret.ang = 270 - math.degrees(math.atan2(y2 - y1, x2 - x1))
-            new_bullet.ang = 270 - math.degrees(math.atan2(y2 - y1, x2 - x1))
+            new_bullet.ang = angle_with_spread
+            if i != 0: # NOTE: rewrite this later this is getting long as hell
+                angle_with_spread = bullet_angle - i*self.turret_multishot_spread
+                dx, dy = get_displacement(angle_with_spread, 10)
+                new_bullet = Bullet(
+                    image=self.bullet_image_path,
+                    spawn=(x1, y1),
+                    target=(x1+dx, y1+dy),
+                    speed=self.turret_speed,
+                    lifetime=lifetime,
+                    damage=self.turret_dmg,
+                    aoe_range=self.turret_aoe,
+                    knockback=self.turret_knockback,
+                    team=0,
+                )
+                self.bullets.add(new_bullet)
+                new_bullet.ang = angle_with_spread
     
     def draw(self, screen):
         super().draw(screen)
