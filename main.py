@@ -198,7 +198,8 @@ class Game:
                 self.grid[grid_y][grid_x] = 0
                 return
             if grid_square.hp != grid_square.max_hp:
-                grid_square.kill()  # replace a broken tower, not sure if this will cause a bug
+                # replace a broken tower, not sure if this will cause a bug
+                grid_square.kill()
             else:
                 return
 
@@ -219,8 +220,12 @@ class Game:
             if anim_start + self.splash_animation_duration < current_time:
                 self.hits.remove((bullet, anim_start))
             else:
-                pygame.draw.circle(self.screen, (233, 233, 216), (
-                    bullet.x + bullet.width/2, bullet.y + bullet.height/2), bullet.aoe_range - 50)
+                pygame.draw.circle(
+                    self.screen,
+                    (233, 233, 216),
+                    (bullet.x + bullet.width/2, bullet.y + bullet.height/2),
+                    bullet.aoe_range - 50
+                )
 
         for y in range(0, 600, 50):
             for x in range(0, 900, 50):
@@ -277,8 +282,12 @@ class Game:
                 target=(450, 300),
             ))
 
-        pygame.draw.rect(self.screen, (200, 200, 200),
-                         pygame.Rect(0, SCREEN_HEIGHT, SCREEN_WIDTH, TOOLBAR_HEIGHT))
+        pygame.draw.rect(
+            self.screen,
+            (200, 200, 200),
+            pygame.Rect(0, SCREEN_HEIGHT, SCREEN_WIDTH, TOOLBAR_HEIGHT)
+        )
+
         self.buttons.draw(self.screen)
         self.fps = 1000 / self.clock.tick(self.framecap)
 
