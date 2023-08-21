@@ -166,7 +166,7 @@ class Game:
             if not button.is_hovering(x, y):
                 continue
 
-            if button.id == "nextwave" and self.wave_in_progress == False:
+            if button.id == "nextwave" and not self.wave_in_progress:
                 self.wave += 1
                 self.wave_in_progress = True
                 self.enemies_remaining = WAVES[self.wave - 1]["enemy_count"]
