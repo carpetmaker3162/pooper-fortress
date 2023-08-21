@@ -56,7 +56,6 @@ class Bullet(Entity):
     def aoe_multiplier(self, enemy):
         dist = distance((self.x + self.width/2, self.y + self.height/2), 
                         (enemy.x + enemy.width/2, enemy.y + enemy.height/2))
-        
         if dist > self.aoe_range:
             return 0
         
@@ -64,17 +63,13 @@ class Bullet(Entity):
             dropoff = 2 * (self.aoe_range - dist) / self.aoe_range
         except ZeroDivisionError:
             dropoff = 0
-        
         return min(1, dropoff)
 
-    def move(self, x, y, collidables):
-        dx = x
-        dy = y
-
+    def move(self, dx, dy, collidables):
         if self.colliding_at(dx, dy, collidables):
             self.kill()
 
         self.y += dy
         self.x += dx
 
-        self.rect.move_ip((dx, dy))
+        self.rect.topleft = (round(self.x), round(self.y))

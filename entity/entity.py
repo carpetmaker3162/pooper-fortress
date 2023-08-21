@@ -43,10 +43,7 @@ class Entity(pygame.sprite.Sprite):
         if self.hp != self.max_hp and not self.invulnerable:
             self.draw_hp_bar(screen)
 
-    def move(self, x, y, collidables):
-        dx = x
-        dy = y
-
+    def move(self, dx, dy, collidables):
         while self.colliding_at(dx, 0, collidables) and dx != 0:
             dx -= decrement(dx)
         while self.colliding_at(0, dy, collidables) and dy != 0:
