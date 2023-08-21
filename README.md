@@ -15,6 +15,6 @@ You are Can Pooper. After [taking your vengeance](https://github.com/carpetmaker
 ```
 $ git clone https://github.com/carpetmaker3162/pooper-adventures
 $ cd pooper-adventures
-$ python3 -m pip install requirements.txt
+$ python3 -m pip install -r requirements.txt
 $ python3 main.py
 ```
