@@ -1,6 +1,6 @@
-# pooper-fortress
+# Pooper Fortress
 
-pooper-fortress
+A tower defence game. The final game in the Pooper Trilogy of games.
 
 ## Quick Start
 
