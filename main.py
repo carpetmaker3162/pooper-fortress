@@ -68,7 +68,7 @@ TOWERS = {
         "hp": 200,
         "turret_rate": 1500,
         "turret_dmg": 40,
-        "turret_aoe": 200,
+        "turret_aoe": 150,
         "turret_speed": 5,
         "turret_range": 400,
         "turret_knockback": 4,
@@ -297,7 +297,7 @@ class Game:
                 size=(50, 50),
                 hp=200,
                 attack_dmg=4,
-                speed=1,
+                speed=3,
                 target=(450, 300),
             ))
 
