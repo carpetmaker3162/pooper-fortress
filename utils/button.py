@@ -9,7 +9,7 @@ class Button(pygame.sprite.Sprite):
                  y=0,
                  width=100,
                  height=100,
-                 id=0):
+                 id=""):
 
         super().__init__()
 
