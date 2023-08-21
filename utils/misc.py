@@ -4,7 +4,6 @@
 
 import math
 
-
 def sign(number):
     if number >= 0:
         return 1
@@ -12,7 +11,6 @@ def sign(number):
         return -1
 
 def decrement(val):
-    """Adjust value based on its magnitude."""
     if abs(val) > 1:
         return sign(val)
     elif abs(val) != 0:
@@ -37,6 +35,9 @@ def find_xy_speed(speed: float, pos: tuple, goal: tuple):
 
     return x_speed, y_speed
 
+# scale `x_speed` and `y_speed` up/down to `speed`
+def scale(x_speed: float, y_speed: float, speed: float):
+    return find_xy_speed(speed, (0, 0), (x_speed, y_speed))
 
 def distance(coords1: tuple, coords2: tuple):
     x1, y1 = coords1
@@ -46,7 +47,6 @@ def distance(coords1: tuple, coords2: tuple):
     dy = y2 - y1
 
     return math.sqrt(dx**2 + dy**2)
-
 
 def find_nearest(entity, group):
     x1, y1 = entity.x, entity.y
@@ -62,7 +62,6 @@ def find_nearest(entity, group):
             nearest_entity = other_entity
 
     return nearest_entity
-
 
 def floor_to_nearest(coordinate: tuple, incr: tuple):
     x, y = coordinate

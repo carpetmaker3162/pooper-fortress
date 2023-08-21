@@ -12,7 +12,10 @@ class Tower(Entity):
                  hp=100,
                  turret_rate=500,
                  turret_dmg=20,
-                 turret_aoe=0):
+                 turret_aoe=0,
+                 turret_knockback=0,
+                 turret_speed=10,
+                 turret_range=500):
         
         turret_image_path = f"assets/turrets/{type}.png"
         self.bullet_image_path = f"assets/bullets/{type}.png"
@@ -31,12 +34,17 @@ class Tower(Entity):
         self.last_fired = 0
         self.bullets = pygame.sprite.Group()
         
-        self.turret_rate = turret_rate
+        self.turret_rate = turret_rate # ms between attack
         self.turret_dmg = turret_dmg
         self.turret_aoe = turret_aoe # splash range of each bullet, not the range of the tower (but do need to add that)
+        self.turret_knockback = turret_knockback
+        self.turret_speed = turret_speed # bullet speed (px/frame)
+        self.turret_range = turret_range # range in px
 
-    def shoot(self, entity):
+    def shoot(self, entity, fps):
         if entity is not None:
+            lifetime = 1000 * self.turret_range / self.turret_speed / fps # s = px / px/f / f/s
+
             x1, y1 = self.rect.center
             x2, y2 = entity.rect.center
             
@@ -44,10 +52,11 @@ class Tower(Entity):
                 image=self.bullet_image_path,
                 spawn=(x1, y1),
                 target=(x2, y2),
-                speed=10,
-                lifetime=1500,
+                speed=self.turret_speed,
+                lifetime=lifetime,
                 damage=self.turret_dmg,
                 aoe_range=self.turret_aoe,
+                knockback=self.turret_knockback,
                 team=0,
             )
             self.bullets.add(new_bullet)
@@ -59,14 +68,14 @@ class Tower(Entity):
         for bullet in self.bullets:
             bullet.draw(screen)
 
-    def update(self, enemies):
+    def update(self, enemies, game_fps):
         super().update()
 
         # shoot the nearest enemy
         nearest_enemy = find_nearest(self, enemies)
         if pygame.time.get_ticks() > self.last_fired + self.turret_rate:
             self.last_fired = pygame.time.get_ticks()
-            self.shoot(nearest_enemy)
+            self.shoot(nearest_enemy, game_fps)
 
         aoe_hits = []
         for bullet in self.bullets:

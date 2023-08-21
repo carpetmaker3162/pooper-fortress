@@ -40,25 +40,34 @@ TOWERS = {
         "type": "gun",
         "size": (50, 50),
         "hp": 200,
-        "turret_rate": 330,
+        "turret_rate": 500,
         "turret_dmg": 10,
         "turret_aoe": 0,
+        "turret_speed": 12,
+        "turret_range": 400,
+        "turret_knockback": 1,
     },
     "cannon": {
         "type": "cannon",
         "size": (50, 50),
         "hp": 200,
         "turret_rate": 1000,
-        "turret_dmg": 30,
+        "turret_dmg": 25,
         "turret_aoe": 100,
+        "turret_speed": 8,
+        "turret_range": 300,
+        "turret_knockback": 2,
     },
     "bomb": {
         "type": "bomb",
         "size": (50, 50),
         "hp": 200,
-        "turret_rate": 2000,
-        "turret_dmg": 60,
+        "turret_rate": 1500,
+        "turret_dmg": 40,
         "turret_aoe": 200,
+        "turret_speed": 5,
+        "turret_range": 400,
+        "turret_knockback": 4,
     }
 }
 
@@ -74,6 +83,7 @@ class Game:
         self.framecap = fps
         self.event_ticker = 0
         self.mouse_pressed = False
+        self.fps = 0
         
         self.game_stopped = False
         self.player_died = False
@@ -214,7 +224,7 @@ class Game:
 
         # draw towers, bullets, and turrets
         for tower in self.towers:
-            new_hits = tower.update(self.enemies)
+            new_hits = tower.update(self.enemies, self.fps) # NOTE: passing self.fps to update is weird and sucks :(
             for hit in new_hits:
                 self.hits.append((hit, current_time))
 
@@ -247,9 +257,9 @@ class Game:
             
             spawn_location = random.choice([
                 (random.randint(-100, 900), -100),
-                (random.randint(-100, 900), 600),
-                (-100, random.randint(-100, 600)),
-                (900, random.randint(-100, 600)),
+                #(random.randint(-100, 900), 600),
+                #(-100, random.randint(-100, 600)),
+                #(900, random.randint(-100, 600)),
             ])
 
             self.enemies.add(Enemy(
@@ -264,7 +274,7 @@ class Game:
         pygame.draw.rect(self.screen, (200, 200, 200),
                          pygame.Rect(0, SCREEN_HEIGHT, SCREEN_WIDTH, TOOLBAR_HEIGHT))
         self.buttons.draw(self.screen)
-        self.clock.tick(self.framecap)
+        self.fps = 1000 / self.clock.tick(self.framecap)
 
     def loop(self):
         while not self.game_stopped:
