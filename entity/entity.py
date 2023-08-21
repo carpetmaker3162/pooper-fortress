@@ -1,6 +1,7 @@
 import pygame
+import math
 from utils.img import get_image
-from utils.misc import sign
+from utils.misc import sign, decrement
 
 
 class Entity(pygame.sprite.Sprite):
@@ -48,27 +49,42 @@ class Entity(pygame.sprite.Sprite):
         dx = x
         dy = y
 
-        while self.colliding_at(0, dy, collidables) and dy != 0:
-            dy -= sign(dy)
         while self.colliding_at(dx, 0, collidables) and dx != 0:
-            dx -= sign(dx)
-        while self.colliding_at(dx, dy, collidables) and (dx != 0 or dy != 0):
-            if dx != 0:
-                dx -= sign(dx)
-            if dy != 0:
-                dy -= sign(dy)
+            dx -= decrement(dx)
+        while self.colliding_at(0, dy, collidables) and dy != 0:
+            dy -= decrement(dy)
+        #while self.colliding_at(dx, dy, collidables) and (dx != 0 or dy != 0):
+        #    if dx != 0:
+        #        dx -= decrement(dx)
+        #    elif dy != 0:
+        #        dy -= decrement(dy)
 
         self.x += dx
         self.y += dy
 
-        # self.rect.move_ip((dx, dy))
-        self.rect.topleft = (round(self.x), round(self.y))
+        #self.rect.move_ip((dx, dy))
+        #self.rect.topleft = (self.x, self.y)
+        def r(val):
+            if val >= 0:
+                return math.floor(val)
+            else:
+                return math.ceil(val)
+        self.rect.topleft = (r(self.x), r(self.y))
 
     def colliding_at(self, x, y, entities):
-        self.rect.move_ip((x, y))
-        colliding = pygame.sprite.spritecollideany(self, entities)
-        self.rect.move_ip((-x, -y))
-        return colliding
+        # self.rect.move_ip((x, y))
+        # colliding = pygame.sprite.spritecollideany(self, entities)
+        # self.rect.move_ip((-x, -y))
+        # return colliding
+        left = self.x + x
+        top = self.y + y
+        right = left + self.width
+        bottom = top + self.height
+        
+        for entity in entities:
+            if (entity.rect.left < right and entity.rect.right > left
+                    and entity.rect.top < bottom and entity.rect.bottom > top):
+                return entity
 
     def update(self, bullets):
         if not self.invulnerable:

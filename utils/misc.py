@@ -11,6 +11,14 @@ def sign(number):
     else:
         return -1
 
+def decrement(val):
+    """Adjust value based on its magnitude."""
+    if abs(val) > 1:
+        return sign(val)
+    elif abs(val) != 0:
+        return val
+    else:
+        return 0
 
 def find_xy_speed(speed: float, pos: tuple, goal: tuple):
     x1, y1 = pos

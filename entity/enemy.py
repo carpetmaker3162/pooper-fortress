@@ -42,7 +42,6 @@ class Enemy(Entity):
             self.move(self.x_speed, self.y_speed, towers)
 
         # attack nearby towers or the player. prioritize the player
-        print(player.rect, self.rect)
         if self.rect.colliderect(player.rect):
             self.attack(player)
         else:
