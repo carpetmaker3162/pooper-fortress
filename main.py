@@ -287,9 +287,9 @@ class Game:
 
             spawn_location = random.choice([
                 (random.randint(-100, 900), -100),
-                # (random.randint(-100, 900), 600),
-                # (-100, random.randint(-100, 600)),
-                # (900, random.randint(-100, 600)),
+                (random.randint(-100, 900), 600),
+                (-100, random.randint(-100, 600)),
+                (900, random.randint(-100, 600)),
             ])
 
             self.enemies.add(Enemy(
