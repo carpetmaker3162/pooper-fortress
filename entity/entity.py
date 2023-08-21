@@ -1,7 +1,7 @@
 import pygame
 import math
 from utils.img import get_image
-from utils.misc import sign, decrement
+from utils.misc import distance, decrement, collide_aabb
 
 
 class Entity(pygame.sprite.Sprite):
@@ -33,9 +33,7 @@ class Entity(pygame.sprite.Sprite):
             self.invulnerable = True
 
     def draw(self, screen):
-        # if self.hitbox:
-        # pygame.draw.rect(screen, pygame.Color(
-        #     255, 0, 0), self.rect, width=5)
+        # rotate if needed
         rotated_image = pygame.transform.rotate(self.image, self.ang)
         current_center = (self.x + self.width//2, self.y + self.height//2)
         new_rect = rotated_image.get_rect(center=current_center)
@@ -45,54 +43,25 @@ class Entity(pygame.sprite.Sprite):
         if self.hp != self.max_hp and not self.invulnerable:
             self.draw_hp_bar(screen)
 
-    def move(self, x, y, collidables):
-        dx = x
-        dy = y
-
+    def move(self, dx, dy, collidables):
         while self.colliding_at(dx, 0, collidables) and dx != 0:
             dx -= decrement(dx)
         while self.colliding_at(0, dy, collidables) and dy != 0:
             dy -= decrement(dy)
-        #while self.colliding_at(dx, dy, collidables) and (dx != 0 or dy != 0):
-        #    if dx != 0:
-        #        dx -= decrement(dx)
-        #    elif dy != 0:
-        #        dy -= decrement(dy)
 
         self.x += dx
         self.y += dy
 
-        #self.rect.move_ip((dx, dy))
-        #self.rect.topleft = (self.x, self.y)
-        def r(val):
-            if val >= 0:
-                return math.floor(val)
-            else:
-                return math.ceil(val)
-        self.rect.topleft = (r(self.x), r(self.y))
+        self.rect.topleft = (round(self.x), round(self.y))
 
+    # return an entity currently collided with, if any
     def colliding_at(self, x, y, entities):
-        # self.rect.move_ip((x, y))
-        # colliding = pygame.sprite.spritecollideany(self, entities)
-        # self.rect.move_ip((-x, -y))
-        # return colliding
-        left = self.x + x
-        top = self.y + y
-        right = left + self.width
-        bottom = top + self.height
-        
         for entity in entities:
-            if (entity.rect.left < right and entity.rect.right > left
-                    and entity.rect.top < bottom and entity.rect.bottom > top):
+            if collide_aabb(self, entity, x, y):
                 return entity
 
-    def update(self, bullets):
-        if not self.invulnerable:
-            for bullet in pygame.sprite.spritecollide(self, bullets, False):
-                if bullet.team != self.team:
-                    self.hp -= bullet.damage
-                    bullet.kill()
-
+    # self kill & dmg handling
+    def update(self):
         if self.hp <= 0 and not self.invulnerable:
             self.kill()
             # remove own bullets

@@ -23,11 +23,11 @@ class Enemy(Entity):
         self.last_attack = 0
         self.team = 1
 
-    def update(self, player, towers, bullets):
-        super().update(bullets)
+    def update(self, player, towers):
+        super().update()
 
         # move diagonally towards self.target
-        # TODO: add pathfinding for enemies in case there is a path to the player
+        # TODO: add pathfinding for enemies in case there is a direct path to the player
         self.x_speed, self.y_speed = find_xy_speed(
             self.speed, (self.x, self.y), self.target)
 
