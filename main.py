@@ -131,7 +131,7 @@ class Game:
 
     def process_events(self):
         self.mouse_pos = pygame.mouse.get_pos()
-        keys = pygame.key.get_pressed()
+        # keys = pygame.key.get_pressed()
         self.event_ticker += 1
 
         for event in pygame.event.get():
