@@ -116,6 +116,7 @@ class Game:
                                 id="nextwave"))
 
         self.current_tower = "gun"
+        i = 0
         for i, tower_name in enumerate(TOWERS.keys()):
             self.buttons.add(Button(image=f"assets/turrets/{tower_name}.png",
                              x=25 + 100*i, y=625, width=50, height=50,
